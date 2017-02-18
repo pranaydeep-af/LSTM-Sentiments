@@ -79,7 +79,7 @@ def create_dictionaries(train = None,
         3- Transforms the Training and Testing Dictionaries
 
     '''
-    if (train is not None) and (model is not None) and (test is not None):
+    if (train is not None) and (model is not None):
         gensim_dict = Dictionary()
         gensim_dict.doc2bow(model.vocab.keys(),
                             allow_update=True)
@@ -100,7 +100,7 @@ def create_dictionaries(train = None,
                 data[key] = new_txt
             return data
         train = parse_dataset(train )
-        test = parse_dataset(test )
+        # test = parse_dataset(test )
         return w2indx, w2vec, train, test
     else:
         print('No data provided...')
@@ -121,7 +121,7 @@ model = Word2Vec(size = vocab_dim,
                  iter = n_iterations)
 model.build_vocab(combined)
 model.train(combined)
-
+# model.save('vectorizer.w2v')
 print('Transform the Data...')
 index_dict, word_vectors, train, test = create_dictionaries(train = train,
                                                             test = test,
@@ -149,33 +149,33 @@ print('Convert labels to Numpy Sets...')
 y_train = np.array(y_train)
 y_test = np.array(y_test)
 
-print('Defining a Simple Sequential Keras Model...')
-model = Sequential()
-model.add(Embedding(output_dim = vocab_dim,
-                    input_dim = n_symbols,
-                    mask_zero = True,
-                    weights = [embedding_weights],
-                    input_length = input_length))
+# print('Defining a Simple Sequential Keras Model...')
+# model = Sequential()
+# model.add(Embedding(output_dim = vocab_dim,
+#                     input_dim = n_symbols,
+#                     mask_zero = True,
+#                     weights = [embedding_weights],
+#                     input_length = input_length))
 
-model.add(LSTM(vocab_dim))
-model.add(Dropout(0.3))
-model.add(Dense(1, activation = 'sigmoid'))
-model.summary()
-print('Compiling the Model...')
-model.compile(optimizer = 'rmsprop',
-              loss = 'binary_crossentropy',
-              metrics = ['accuracy'])
+# model.add(LSTM(vocab_dim))
+# model.add(Dropout(0.3))
+# model.add(Dense(1, activation = 'sigmoid'))
+# model.summary()
+# print('Compiling the Model...')
+# model.compile(optimizer = 'rmsprop',
+#               loss = 'binary_crossentropy',
+#               metrics = ['accuracy'])
 
-print("Train...")
-model.fit(X_train, y_train,
-          batch_size = batch_size,
-          nb_epoch = n_epoch,
-          validation_data = (X_test, y_test),
-          shuffle = True)
+# print("Train...")
+# model.fit(X_train, y_train,
+#           batch_size = batch_size,
+#           nb_epoch = n_epoch,
+#           validation_data = (X_test, y_test),
+#           shuffle = True)
 
-print("Evaluate...")
-score = model.evaluate(X_test, y_test,
-                       batch_size = batch_size)
+# print("Evaluate...")
+# score = model.evaluate(X_test, y_test,
+#                        batch_size = batch_size)
 
-print('Test score:', score[0])
-print('Test accuracy:', score[1])
+# print('Test score:', score[0])
+# print('Test accuracy:', score[1])
